@@ -1,0 +1,42 @@
+fetch('http://localhost:8080/test_db_project_war/roles/1', {
+  method: 'DELETE',
+})
+.then(res => res.text())
+.then(res => console.log(res))
+
+ ////////////
+
+var role = {
+    name: "newRole"
+};
+
+fetch("http://localhost:8080/test_db_project_war/roles",
+{
+    method: "POST",
+    body: JSON.stringify( role )
+})
+.then(function(res){ return res.json(); })
+.then(res => console.log(res))
+
+//////////
+
+var role = {
+    id:28,
+    name: "Kim"
+};
+
+fetch("http://localhost:8080/test_db_project_war/roles",
+{
+    method: "PUT",
+    body: JSON.stringify( role )
+})
+.then(function(res){ return res.json(); })
+.then(res => console.log(res))
+
+////////
+
+fetch('http://localhost:8080/test_db_project_war/roles', {
+  method: 'GET',
+})
+.then(res => res.text())
+.then(res => console.log(res))
