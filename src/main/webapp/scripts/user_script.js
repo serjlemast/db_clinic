@@ -1,23 +1,20 @@
-let url = "http://localhost:8080/test_db_project_war/users";
-let url2 = "http://localhost:8080/test_db_project_war/users?page_number="
-let url3 = "http://localhost:8080/test_db_project_war/users/count"
-getUsersFromServer();
-getButtons();
+getDefaultCountOfUsersFromServer();
+createButtonsForPagination();
 
-function getUsersFromServer() {
-    fetch(url, {method: 'GET'})
+function getDefaultCountOfUsersFromServer() {
+    fetch(baseUrl + "/users", {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createUserList(jsonResponse))
 }
 
-function getUsersFromServer2(page_number) {
-    fetch(url2 + page_number, {method: 'GET'})
+function getUsersFromServerByPageNumber(page_number) {
+    fetch(baseUrl + "/users?page_number=" + page_number, {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createUserList(jsonResponse))
 }
 
-function getButtons() {
-    fetch(url3, {method: 'GET'})
+function createButtonsForPagination() {
+    fetch(baseUrl + "/users/count", {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createPaginationButtons(jsonResponse))
 }
@@ -49,7 +46,7 @@ function createPaginationButtons(countOfUser) {
     let divElement2 = document.getElementById("paginationButtons");
     let rootElement2 = document.createElement("ui");
     rootElement2.setAttribute("class", "pagination")
-    for (let i = 1; i < countOfUser.total / 5 + 1; i++) {
+    for (let i = 1; i < countOfUser.total / countOfUser.limit + 1; i++) {
         let childElement2 = document.createElement("button");
         childElement2.setAttribute("type", "button")
         childElement2.setAttribute("class", "btn btn-secondary btn-sm btn-outline-dark")
@@ -64,43 +61,13 @@ function createPaginationButtons(countOfUser) {
         if (!isButton) {
             return;
         }
-        getUsersFromServer2(event.target.id.replace("buttons_", ""));
+        getUsersFromServerByPageNumber(event.target.id.replace("buttons_", ""));
     })
 }
 
 function eventCreateNewUser() {
-    let newUserNameValue = document.getElementById("newUserName").value;
-    let newUserPasswordValue = document.getElementById("newUserPassword").value;
-    let newUserPhoneValue = document.getElementById("newUserPhone").value;
-    let newUserFirstNameValue = document.getElementById("newUserFirstName").value;
-    let newUserSecondNameValue = document.getElementById("newUserSecondName").value;
-    let newUserIdValue = document.getElementById("newUserId").value;
-    let newUserRoleName = document.getElementById("selectRoleButton").value;
-    if (newUserNameValue === "") {
-        alert("Please fill user name!!!")
-        return;
-    }
-    if (newUserPasswordValue === "") {
-        alert("Please fill user password!!!")
-        return;
-    }
-    if (newUserRoleName === "") {
-        alert("Please fill role name!!")
-        return;
-    }
-    if (newUserIdValue !== "") {
-        alert("id should fill just for update!!!")
-        return;
-    }
-    let user = {
-        username: newUserNameValue,
-        password: newUserPasswordValue,
-        phone: newUserPhoneValue,
-        firstName: newUserFirstNameValue,
-        secondName: newUserSecondNameValue,
-        roleName: newUserRoleName
-    };
-    fetch(url,
+    validateUserCreate()
+    fetch(baseUrl + "/users",
         {
             method: "POST",
             body: JSON.stringify(user)
@@ -121,35 +88,8 @@ function eventCreateNewUser() {
 }
 
 function eventUpdateUser() {
-    let newUserNameValue = document.getElementById("newUserName").value;
-    let newUserPasswordValue = document.getElementById("newUserPassword").value;
-    let newUserPhoneValue = document.getElementById("newUserPhone").value;
-    let newUserFirstNameValue = document.getElementById("newUserFirstName").value;
-    let newUserSecondNameValue = document.getElementById("newUserSecondName").value;
-    let newUserIdValue = document.getElementById("newUserId").value;
-    let newUserRoleName = document.getElementById("selectRoleButton").value;
-    if (newUserIdValue === "") {
-        alert("Please fill role id!!!")
-        return;
-    }
-    if (newUserSecondNameValue === "") {
-        alert("Please fill second name !!!")
-        return;
-    }
-    if (newUserNameValue === ""){
-        alert("Please fill user name !!!")
-        return;
-    }
-    let user = {
-        id: newUserIdValue,
-        username: newUserNameValue,
-        password: newUserPasswordValue,
-        phone: newUserPhoneValue,
-        firstName: newUserFirstNameValue,
-        secondName: newUserSecondNameValue,
-        roleName: newUserRoleName
-    };
-    fetch(url,
+    validateUserUpdate()
+    fetch(baseUrl + "/users",
         {
             method: "PUT",
             body: JSON.stringify(user)
@@ -169,9 +109,43 @@ function eventDeleteUserById() {
         alert("Please fill id!!!")
         return;
     }
-    fetch(url + "/" + userIdElement, {method: 'DELETE'})
+    fetch(BaseUrl + "/" + userIdElement, {method: 'DELETE'})
         .then(response => {
             console.log(response)
             document.getElementById("li_id_" + userIdElement).remove()
         })
+}
+
+function validateUserCreate() {
+    if (newUserNameValue === "") {
+        alert("Please fill user name!!!")
+        return;
+    }
+    if (newUserPasswordValue === "") {
+        alert("Please fill user password!!!")
+        return;
+    }
+    if (newUserRoleName === "") {
+        alert("Please fill role name!!")
+        return;
+    }
+    if (newUserIdValue !== "") {
+        alert("id should fill just for update!!!")
+        return;
+    }
+}
+
+function validateUserUpdate() {
+    if (newUserIdValue === "") {
+        alert("Please fill role id!!!")
+        return;
+    }
+    if (newUserSecondNameValue === "") {
+        alert("Please fill second name !!!")
+        return;
+    }
+    if (newUserNameValue === "") {
+        alert("Please fill user name !!!")
+        return;
+    }
 }

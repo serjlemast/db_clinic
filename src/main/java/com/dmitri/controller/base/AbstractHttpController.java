@@ -64,6 +64,13 @@ public class AbstractHttpController extends HttpServlet {
         return gson.toJson(jsonObj);
     }
 
+    protected String buildJson(String key, int value,String nextKey,int nextValue) {
+        JsonObject jsonObj = new JsonObject();
+        jsonObj.addProperty(key, value);
+        jsonObj.addProperty(nextKey, nextValue);
+        return gson.toJson(jsonObj);
+    }
+
     protected void writeJsonResponseBody(int status, String json, HttpServletResponse resp) {
         try (PrintWriter out = resp.getWriter()) {
             resp.setContentType("application/json");

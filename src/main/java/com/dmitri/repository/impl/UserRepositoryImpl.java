@@ -9,6 +9,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.dmitri.constant.WebConstant.DEFAULT_COUNT_OF_USERS_ON_PAGE;
+
 public class UserRepositoryImpl implements UserRepository {
 
     /**
@@ -20,10 +22,10 @@ public class UserRepositoryImpl implements UserRepository {
             "room_number,password,username,role_id) VALUES (?,?,?,?,?,?,?,?)";
     private static final String DELETE_USER_BY_ID_SQL_QUERY = "DELETE FROM users WHERE id = ?";
     private static final String SELECT_LAST_USER_ID_SQL_QUERY = "SELECT MAX(id) AS id FROM users";
-    private static final String SELECT_COUNT_OF_USERS = "SELECT COUNT(id) FROM users";
+    private static final String SELECT_COUNT_OF_USERS_SQL_QUERY = "SELECT COUNT(id) FROM users";
 
     /**
-     * Role column names: 'id' and 'name'
+     * User column
      */
     private static final String USER_ID_COLUMN = "id";
     public static final String USER_FIRST_NAME_COLUMN = "first_name";
@@ -33,8 +35,6 @@ public class UserRepositoryImpl implements UserRepository {
     public static final String USER_NAME_COLUMN = "username";
     public static final String USER_PASSWORD_COLUMN = "password";
     public static final String USER_ROLE_NAME_COLUMN = "r.name";
-//    public static final String USER_CATEGORY_NAME_COLUMN = "c.name";
-
 
     /**
      * Connection to MSQL data base
@@ -49,7 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> getUsers(int offset) {
         List<User> userList = new ArrayList<>();
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(SELECT_USERS_SQL_QUERY + ((offset - 1) * 5))) {
+             ResultSet resultSet = statement.executeQuery(SELECT_USERS_SQL_QUERY + calculateOffset(offset))) {
             while (resultSet.next()) {
                 User user = User.builder()
                         .id(resultSet.getInt(USER_ID_COLUMN))
@@ -69,9 +69,11 @@ public class UserRepositoryImpl implements UserRepository {
         return userList;
     }
 
-    @Override
-    public User getUserById(int id) {
-        return null;
+    private int calculateOffset(int offset) {
+        if (offset < 1) {
+            return 1;
+        }
+        return (offset - 1) * DEFAULT_COUNT_OF_USERS_ON_PAGE;
     }
 
     @Override
@@ -117,8 +119,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public int updateUser(User user) {
-        try (Statement Statement = connection.createStatement()) {
-            return Statement.executeUpdate(createCustomSql(user));
+        try (Statement statement = connection.createStatement()) {
+            return statement.executeUpdate(createCustomSql(user));
         } catch (SQLException ex) {
             throw new ApplicationException("Error updating role name by id, error:", ex);
         }
@@ -127,7 +129,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public int getCountOfUsers() {
         try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(SELECT_COUNT_OF_USERS);
+            ResultSet resultSet = statement.executeQuery(SELECT_COUNT_OF_USERS_SQL_QUERY);
             if (resultSet.next()) {
                 return resultSet.getInt("COUNT(id)");
             } else {
@@ -162,7 +164,8 @@ public class UserRepositoryImpl implements UserRepository {
         if (user.getRoleName() != null && !user.getRoleName().isEmpty() && !user.getRoleName().equals("ROLE NAME")) {
             builder
                     .append(",")
-                    .append("role_id = '" + getRoleId(user.getRoleName()) + "'");
+                    .append("role_id = " + getRoleId(user.getRoleName()));
+            //todo
 
         }
 
@@ -172,16 +175,15 @@ public class UserRepositoryImpl implements UserRepository {
         return result;
     }
 
-    private int getRoleId(String roleName){
-        String sql4 = "SELECT id FROM role WHERE name = '"+roleName+"'";
+    private int getRoleId(String roleName) {
+        String sql4 = "SELECT id FROM role WHERE name = '" + roleName + "'";
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql4)) {
             while (resultSet.next()) {
                 return resultSet.getInt(USER_ID_COLUMN);
             }
             return 0;
-        }
-        catch (SQLException ex){
+        } catch (SQLException ex) {
             throw new ApplicationException("Error getting role name of role by roleName, error:", ex);
         }
     }

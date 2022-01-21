@@ -1,8 +1,7 @@
-let roleUrl = "http://localhost:8080/test_db_project_war/roles";
 getAllRolesFromServer();
 
 function getAllRolesFromServer() {
-    fetch(roleUrl, {method: 'GET'})
+    fetch(baseUrl+"/roles", {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createHtml(jsonResponse))
 }

@@ -1,9 +1,32 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>work with role</title>
-    <%--  Src folder depends on security  --%>
+
+    <script type="text/javascript">
+        let baseUrl = '<%= request.getRequestURL() %>'
+
+        let newUserNameValue = document.getElementById("newUserName").value;
+        let newUserPasswordValue = document.getElementById("newUserPassword").value;
+        let newUserPhoneValue = document.getElementById("newUserPhone").value;
+        let newUserFirstNameValue = document.getElementById("newUserFirstName").value;
+        let newUserSecondNameValue = document.getElementById("newUserSecondName").value;
+        let newUserIdValue = document.getElementById("newUserId").value;
+        let newUserRoleName = document.getElementById("selectRoleButton").value;
+
+        let user = {
+            username: newUserNameValue,
+            password: newUserPasswordValue,
+            phone: newUserPhoneValue,
+            firstName: newUserFirstNameValue,
+            secondName: newUserSecondNameValue,
+            roleName: newUserRoleName
+        };
+        // todo drygoi
+    </script>
+
     <script type="text/javascript" src="scripts/user_script.js"></script>
     <script type="text/javascript" src="scripts/role_script.js"></script>
     <script type="text/javascript" src="webjars/jquery/3.3.1/jquery.min.js"></script>

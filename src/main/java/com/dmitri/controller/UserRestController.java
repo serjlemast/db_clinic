@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static com.dmitri.constant.WebConstant.DEFAULT_COUNT_OF_USERS_ON_PAGE;
+
 @Log
 @WebServlet(urlPatterns = {"/users", "/users/*"})
 public class UserRestController extends AbstractHttpController {
@@ -25,29 +27,33 @@ public class UserRestController extends AbstractHttpController {
         if (pathInfo != null && pathInfo.equals("/count")) {
             try {
                 int total = userService.getCountOfUser();
-                String json = buildJson("total", total);
-                writeJsonResponseBody(200, json, resp);
-            } catch (ApplicationException ex) {
-                buildErrorResponse(404, ex.getMessage(), resp);
-            }
-        } else {
-            try {
-                String pageNumber = req.getParameter("page_number");
-                int offset;
-                if (pageNumber == null || pageNumber.equals("1") || pageNumber.equals("0")) {
-                    offset = 1;
-                } else {
-                    offset = Integer.parseInt(pageNumber);
-                }
-
-                List<User> users = userService.getUsers(offset);
-                String json = toJson(users);
+                String json = buildJson("total", total, "limit", DEFAULT_COUNT_OF_USERS_ON_PAGE);
                 writeJsonResponseBody(200, json, resp);
             } catch (ApplicationException ex) {
                 buildErrorResponse(404, ex.getMessage(), resp);
             }
         }
+        try {
+            String pageNumber = req.getParameter("page_number");
+            int offset = defineOffset(pageNumber);
 
+            List<User> users = userService.getUsers(offset);
+            String json = toJson(users);
+            writeJsonResponseBody(200, json, resp);
+        } catch (ApplicationException ex) {
+            buildErrorResponse(404, ex.getMessage(), resp);
+        }
+    }
+
+    int defineOffset(String pageNumber) {
+        if (pageNumber == null || pageNumber.equals("1") || pageNumber.equals("0")) {
+            return 1;
+        }
+        try {
+            return Integer.parseInt(pageNumber);
+        } catch (NumberFormatException e) {
+            return 1;
+        }
     }
 
 

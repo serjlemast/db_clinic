@@ -9,8 +9,6 @@ public interface UserRepository {
 
     List<User> getUsers(int offset);
 
-    User getUserById(int id);
-
     int getLastUserId();
 
     int deleteUser(int id);
