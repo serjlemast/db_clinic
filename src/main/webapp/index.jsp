@@ -15,6 +15,7 @@
         let newUserSecondNameValue = document.getElementById("newUserSecondName").value;
         let newUserIdValue = document.getElementById("newUserId").value;
         let newUserRoleName = document.getElementById("selectRoleButton").value;
+        // let newUserRoleId = document.getElementsByName(newUserRoleName);
 
         let user = {
             username: newUserNameValue,

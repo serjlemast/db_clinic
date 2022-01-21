@@ -17,12 +17,12 @@ public class UserRepositoryImpl implements UserRepository {
      * SQL queries
      */
     private static String SELECT_USERS_SQL_QUERY = "SELECT u.id, first_name, second_name, phone, birthday, username," +
-            " password, r.name FROM users AS u LEFT JOIN role AS r ON role_id=r.id LIMIT 5 OFFSET ";
+            " password, r.name AS role_name FROM users AS u LEFT JOIN role AS r ON role_id=r.id LIMIT 5 OFFSET ";
     private static final String INSERT_NEW_USER_SQL_QUERY = "INSERT INTO users (second_name,birthday,first_name,phone," +
             "room_number,password,username,role_id) VALUES (?,?,?,?,?,?,?,?)";
     private static final String DELETE_USER_BY_ID_SQL_QUERY = "DELETE FROM users WHERE id = ?";
     private static final String SELECT_LAST_USER_ID_SQL_QUERY = "SELECT MAX(id) AS id FROM users";
-    private static final String SELECT_COUNT_OF_USERS_SQL_QUERY = "SELECT COUNT(id) FROM users";
+    private static final String SELECT_COUNT_OF_USERS_SQL_QUERY = "SELECT COUNT(id) AS count_id FROM users";
 
     /**
      * User column
@@ -34,7 +34,7 @@ public class UserRepositoryImpl implements UserRepository {
     public static final String USER_BIRTHDAY_COLUMN = "birthday";
     public static final String USER_NAME_COLUMN = "username";
     public static final String USER_PASSWORD_COLUMN = "password";
-    public static final String USER_ROLE_NAME_COLUMN = "r.name";
+    public static final String USER_ROLE_NAME_COLUMN = "role_name";
 
     /**
      * Connection to MSQL data base
@@ -131,7 +131,7 @@ public class UserRepositoryImpl implements UserRepository {
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(SELECT_COUNT_OF_USERS_SQL_QUERY);
             if (resultSet.next()) {
-                return resultSet.getInt("COUNT(id)");
+                return resultSet.getInt("count_id");
             } else {
                 throw new ApplicationException("Not found user by last id");
             }
