@@ -18,4 +18,6 @@ public interface UserRepository {
     int updateUser(User user);
 
     int getCountOfUsers();
+
+    int updateUserRoleIdByName(int userId,String roleName);
 }

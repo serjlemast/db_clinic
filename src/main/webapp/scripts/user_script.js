@@ -2,19 +2,19 @@ getDefaultCountOfUsersFromServer();
 createButtonsForPagination();
 
 function getDefaultCountOfUsersFromServer() {
-    fetch(baseUrl + "/users", {method: 'GET'})
+    fetch(baseUrl + "users", {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createUserList(jsonResponse))
 }
 
 function getUsersFromServerByPageNumber(page_number) {
-    fetch(baseUrl + "/users?page_number=" + page_number, {method: 'GET'})
+    fetch(baseUrl + "users?page_number=" + page_number, {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createUserList(jsonResponse))
 }
 
 function createButtonsForPagination() {
-    fetch(baseUrl + "/users/count", {method: 'GET'})
+    fetch(baseUrl + "users/count", {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createPaginationButtons(jsonResponse))
 }
@@ -30,7 +30,7 @@ function createUserList(userInJsonFormat) {
         let stroke = "id: " + item.id + ", user name: " + item.username
             + ", password: " + item.password + ", phone: " + item.phone
             + ", first name:" + item.firstName + ", second name:" + item.secondName
-            + ", role name:" + item.roleName
+            + ", role name:" + item.roleName + ", birthday:" + item.birthday
         let childElement = document.createElement("li");
         childElement.setAttribute("id", "li_id_" + item.id)
 
@@ -66,8 +66,42 @@ function createPaginationButtons(countOfUser) {
 }
 
 function eventCreateNewUser() {
-    validateUserCreate()
-    fetch(baseUrl + "/users",
+    let newUserNameValue = document.getElementById("newUserName").value;
+    let newUserPasswordValue = document.getElementById("newUserPassword").value;
+    let newUserPhoneValue = document.getElementById("newUserPhone").value;
+    let newUserFirstNameValue = document.getElementById("newUserFirstName").value;
+    let newUserSecondNameValue = document.getElementById("newUserSecondName").value;
+    let newUserIdValue = document.getElementById("newUserId").value;
+    let newUserRoleName = document.getElementById("selectRoleButton").value;
+    let newUserBirthday = document.getElementById("newUserBirthday").value;
+    let user = {
+        username: newUserNameValue,
+        password: newUserPasswordValue,
+        phone: newUserPhoneValue,
+        firstName: newUserFirstNameValue,
+        secondName: newUserSecondNameValue,
+        roleName: newUserRoleName,
+        id: newUserIdValue,
+        birthday: newUserBirthday
+    };
+    // validateUser({newUserSecondNameValue,newUserNameValue,newUserRoleName});
+    if (newUserIdValue !== "") {
+        alert("id should fill just for update!!!")
+        return;
+    }
+    if (newUserSecondNameValue === "") {
+        alert("Please fill second name !!!")
+        return;
+    }
+    if (newUserNameValue === "") {
+        alert("Please fill user name !!!")
+        return;
+    }
+    if (newUserRoleName === "ROLE NAME" || newUserRoleName === "") {
+        alert("Please fill user name !!!")
+        return;
+    }
+    fetch("http://localhost:8080/test_db_project_war/users",
         {
             method: "POST",
             body: JSON.stringify(user)
@@ -81,15 +115,44 @@ function eventCreateNewUser() {
             let text = document.createTextNode("id: " + id + ", user name: " + newUserNameValue
                 + ", password:" + newUserPasswordValue + ", phone: " + newUserPhoneValue
                 + ", first name:" + newUserFirstNameValue + ", second name:" + newUserSecondNameValue
-                + ", role name:" + newUserRoleName);
+                + ", role name:" + newUserRoleName, ", birthday:" + newUserBirthday);
             childElement.appendChild(text);
             rootElement.appendChild(childElement)
         })
 }
 
 function eventUpdateUser() {
-    validateUserUpdate()
-    fetch(baseUrl + "/users",
+    let newUserNameValue = document.getElementById("newUserName").value;
+    let newUserPasswordValue = document.getElementById("newUserPassword").value;
+    let newUserPhoneValue = document.getElementById("newUserPhone").value;
+    let newUserFirstNameValue = document.getElementById("newUserFirstName").value;
+    let newUserSecondNameValue = document.getElementById("newUserSecondName").value;
+    let newUserIdValue = document.getElementById("newUserId").value;
+    let newUserRoleName = document.getElementById("selectRoleButton").value;
+    let newUserBirthday = document.getElementById("newUserBirthday").value;
+    let user = {
+        username: newUserNameValue,
+        password: newUserPasswordValue,
+        phone: newUserPhoneValue,
+        firstName: newUserFirstNameValue,
+        secondName: newUserSecondNameValue,
+        roleName: newUserRoleName,
+        id: newUserIdValue,
+        birthday: newUserBirthday
+    };
+    if (newUserSecondNameValue === "") {
+        alert("Please fill second name !!!")
+        return;
+    }
+    if (newUserNameValue === "") {
+        alert("Please fill user name !!!")
+        return;
+    }
+    if (newUserRoleName === "ROLE NAME" || newUserRoleName === "") {
+        alert("Please fill user name !!!")
+        return;
+    }
+    fetch(baseUrl + "users",
         {
             method: "PUT",
             body: JSON.stringify(user)
@@ -99,7 +162,7 @@ function eventUpdateUser() {
             liElement.innerHTML = "id: " + newUserIdValue + ", user name: " + newUserNameValue
                 + ", password:" + newUserPasswordValue + ", phone: " + newUserPhoneValue
                 + ", first name:" + newUserFirstNameValue + ", second name:" + newUserSecondNameValue
-                + ", role name:" + newUserRoleName;
+                + ", role name:" + newUserRoleName + ", birthday:" + newUserBirthday;
         })
 }
 
@@ -109,43 +172,18 @@ function eventDeleteUserById() {
         alert("Please fill id!!!")
         return;
     }
-    fetch(BaseUrl + "/" + userIdElement, {method: 'DELETE'})
+    fetch(baseUrl + userIdElement, {method: 'DELETE'})
         .then(response => {
             console.log(response)
             document.getElementById("li_id_" + userIdElement).remove()
         })
 }
 
-function validateUserCreate() {
-    if (newUserNameValue === "") {
-        alert("Please fill user name!!!")
-        return;
-    }
-    if (newUserPasswordValue === "") {
-        alert("Please fill user password!!!")
-        return;
-    }
-    if (newUserRoleName === "") {
-        alert("Please fill role name!!")
-        return;
-    }
-    if (newUserIdValue !== "") {
-        alert("id should fill just for update!!!")
-        return;
-    }
-}
-
-function validateUserUpdate() {
-    if (newUserIdValue === "") {
-        alert("Please fill role id!!!")
-        return;
-    }
-    if (newUserSecondNameValue === "") {
-        alert("Please fill second name !!!")
-        return;
-    }
-    if (newUserNameValue === "") {
-        alert("Please fill user name !!!")
-        return;
-    }
-}
+// function validateUser(arr) {
+//     arr.forEach(function (item) {
+//         if (item === "") {
+//             alert("Please fill" + item + "!!!");
+//             return;
+//         }
+//     });
+// }

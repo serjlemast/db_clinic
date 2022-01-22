@@ -29,9 +29,13 @@
                     <input name="userName" id="newUserName" type="text" size="20">
                     Phone:
                     <input name="userPhone" id="newUserPhone" type="text" size="20">
-                    <input type="button" id="selectRoleButton" class="btn btn-secondary btn-dark dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false" value="ROLE NAME">
+                    <input type="button" id="selectRoleButton" class="btn btn-secondary btn-dark dropdown-toggle"
+                           data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false" value="ROLE NAME">
                     <div class="dropdown-menu dropdown-menu-right" id="rolesName"></div>
+                    <div class="md-form md-outline input-with-post-icon datepicker">
+                        <input placeholder="Select date" type="date" id="newUserBirthday" class="form-control">
+                    </div>
                 </div>
                 <div class="form-group">
                     Password:

@@ -6,6 +6,7 @@ import com.dmitri.service.UserService;
 import com.dmitri.service.impl.RoleServiceImpl;
 import com.dmitri.service.impl.UserServiceImpl;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import lombok.extern.java.Log;
@@ -20,12 +21,13 @@ import java.io.PrintWriter;
 @Log
 public class AbstractHttpController extends HttpServlet {
 
+    public static final String DATE_FORMAT_JSON = "yyyy-mm-dd";
     private final Gson gson;
     protected final RoleService roleService;
     protected final UserService userService;
 
     public AbstractHttpController() {
-        gson = new Gson();
+        gson = new GsonBuilder().setDateFormat(DATE_FORMAT_JSON).create();
         roleService = new RoleServiceImpl();
         userService = new UserServiceImpl();
     }

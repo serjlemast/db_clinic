@@ -19,7 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static String SELECT_USERS_SQL_QUERY = "SELECT u.id, first_name, second_name, phone, birthday, username," +
             " password, r.name AS role_name FROM users AS u LEFT JOIN role AS r ON role_id=r.id LIMIT 5 OFFSET ";
     private static final String INSERT_NEW_USER_SQL_QUERY = "INSERT INTO users (second_name,birthday,first_name,phone," +
-            "room_number,password,username,role_id) VALUES (?,?,?,?,?,?,?,?)";
+            "room_number,password,username) VALUES (?,?,?,?,?,?,?)";
     private static final String DELETE_USER_BY_ID_SQL_QUERY = "DELETE FROM users WHERE id = ?";
     private static final String SELECT_LAST_USER_ID_SQL_QUERY = "SELECT MAX(id) AS id FROM users";
     private static final String SELECT_COUNT_OF_USERS_SQL_QUERY = "SELECT COUNT(id) AS count_id FROM users";
@@ -104,13 +104,12 @@ public class UserRepositoryImpl implements UserRepository {
     public int createNewUser(User user) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_NEW_USER_SQL_QUERY)) {
             preparedStatement.setString(1, user.getSecondName());
-            preparedStatement.setDate(2, (Date) user.getBirthday());
+            preparedStatement.setDate(2, user.getBirthday());
             preparedStatement.setString(3, user.getSecondName());
             preparedStatement.setString(4, user.getPhone());
             preparedStatement.setString(5, user.getRoomNumber());
             preparedStatement.setString(6, user.getPassword());
             preparedStatement.setString(7, user.getUsername());
-            preparedStatement.setInt(8, getRoleId(user.getRoleName()));
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
             throw new ApplicationException("Error inserting new user to database, error:", ex);
@@ -155,17 +154,17 @@ public class UserRepositoryImpl implements UserRepository {
                     .append(",")
                     .append("first_name = '" + user.getFirstName() + "'");
         }
-        if (user.getPhone() != null && !user.getPhone().isEmpty()) {
+        String phone = user.getPhone();
+        if (phone != null && !phone.isEmpty()) {
             builder
                     .append(",")
                     .append("phone = '" + user.getPhone() + "'");
 
         }
-        if (user.getRoleName() != null && !user.getRoleName().isEmpty() && !user.getRoleName().equals("ROLE NAME")) {
+        if (user.getBirthday() != null) {
             builder
                     .append(",")
-                    .append("role_id = " + getRoleId(user.getRoleName()));
-            //todo
+                    .append("birthday = '" + user.getBirthday() + "'");
 
         }
 
@@ -175,16 +174,15 @@ public class UserRepositoryImpl implements UserRepository {
         return result;
     }
 
-    private int getRoleId(String roleName) {
-        String sql4 = "SELECT id FROM role WHERE name = '" + roleName + "'";
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql4)) {
-            while (resultSet.next()) {
-                return resultSet.getInt(USER_ID_COLUMN);
-            }
-            return 0;
+    @Override
+    public int updateUserRoleIdByName(int userId, String roleName) {
+        String sql = "UPDATE users AS u LEFT JOIN role AS r ON r.name = '%s'" +
+                " SET role_id = r.id WHERE u.id = %s";
+        try (Statement statement = connection.createStatement()) {
+            String result = String.format(sql,roleName,userId);
+            return statement.executeUpdate(result);
         } catch (SQLException ex) {
-            throw new ApplicationException("Error getting role name of role by roleName, error:", ex);
+            throw new ApplicationException("Error updating role_id by role.name, error:", ex);
         }
     }
 }

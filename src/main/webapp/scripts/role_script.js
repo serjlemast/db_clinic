@@ -1,7 +1,7 @@
 getAllRolesFromServer();
 
 function getAllRolesFromServer() {
-    fetch(baseUrl+"/roles", {method: 'GET'})
+    fetch(baseUrl+"roles", {method: 'GET'})
         .then(response => response.json())
         .then(jsonResponse => createHtml(jsonResponse))
 }
@@ -57,7 +57,7 @@ function eventCreateNewRole() {
     let role = {
         name: newRoleNameValue
     };
-    fetch(roleUrl,
+    fetch(baseUrl+"roles",
         {
             method: "POST",
             body: JSON.stringify(role)
@@ -91,7 +91,7 @@ function eventUpdateRole() {
         name: updateRoleNameValue
     };
     idValidate(updateRoleIdValue)
-    fetch(roleUrl,
+    fetch(baseUrl+"roles",
         {
             method: "PUT",
             body: JSON.stringify(role)
@@ -111,7 +111,7 @@ function eventDeleteRoleById() {
         return;
     }
     idValidate(roleIdElement)
-    fetch(roleUrl + "/" + roleIdElement, {method: 'DELETE'})
+    fetch(baseUrl + roleIdElement, {method: 'DELETE'})
         .then(response => {
             console.log(response)
             document.getElementById("li_id_" + roleIdElement).remove()

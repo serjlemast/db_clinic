@@ -7,24 +7,6 @@
 
     <script type="text/javascript">
         let baseUrl = '<%= request.getRequestURL() %>'
-
-        let newUserNameValue = document.getElementById("newUserName").value;
-        let newUserPasswordValue = document.getElementById("newUserPassword").value;
-        let newUserPhoneValue = document.getElementById("newUserPhone").value;
-        let newUserFirstNameValue = document.getElementById("newUserFirstName").value;
-        let newUserSecondNameValue = document.getElementById("newUserSecondName").value;
-        let newUserIdValue = document.getElementById("newUserId").value;
-        let newUserRoleName = document.getElementById("selectRoleButton").value;
-        // let newUserRoleId = document.getElementsByName(newUserRoleName);
-
-        let user = {
-            username: newUserNameValue,
-            password: newUserPasswordValue,
-            phone: newUserPhoneValue,
-            firstName: newUserFirstNameValue,
-            secondName: newUserSecondNameValue,
-            roleName: newUserRoleName
-        };
         // todo drygoi
     </script>
 

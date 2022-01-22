@@ -96,9 +96,9 @@ public class UserRestController extends AbstractHttpController {
         try {
             // 1. Get body from Http request
             String json = getBody(req);
-            // 2. parse body to obtain role class
+            // 2. parse body to obtain user class
             User user = jsonToClass(json, User.class);
-            // 3. update role name by id
+            // 3. update user
             userService.updateUser(user);
             // 4. Create successful HTTP response with JSON body
             writeJsonResponseBody(201, json, resp);
@@ -117,11 +117,11 @@ public class UserRestController extends AbstractHttpController {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            // 1. Get role id from path
+            // 1. Get user id from path
             int userId = defineUrlPathParameter(req);
-            // 2. Delete role from data base by role id
+            // 2. Delete user from data base by user id
             userService.deleteUser(userId);
-            // 3.Create json object with role id
+            // 3.Create json object with user id
             String json = buildJson("id", userId);
             // 4. Create successful HTTP response with JSON body
             writeJsonResponseBody(201, json, resp);

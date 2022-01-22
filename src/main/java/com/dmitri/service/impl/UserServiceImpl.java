@@ -33,13 +33,15 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         int userId = getNewUserIdTx(user);
         user.setId(userId);
+        userRepository.updateUserRoleIdByName(userId,user.getRoleName());
         return user;
     }
 
     @Override
     public void updateUser(User user) {
         int statusCode = userRepository.updateUser(user);
-        if (statusCode > 0) {
+        int statusCode2 = userRepository.updateUserRoleIdByName(user.getId(),user.getRoleName());
+        if (statusCode > 0 && statusCode2 >0) {
             return;
         }
         throw new ApplicationException("Cant update user: " + user);
