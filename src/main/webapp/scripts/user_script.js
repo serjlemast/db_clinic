@@ -81,7 +81,6 @@ function eventCreateNewUser() {
         firstName: newUserFirstNameValue,
         secondName: newUserSecondNameValue,
         roleName: newUserRoleName,
-        id: newUserIdValue,
         birthday: newUserBirthday
     };
     // validateUser({newUserSecondNameValue,newUserNameValue,newUserRoleName});
@@ -172,18 +171,18 @@ function eventDeleteUserById() {
         alert("Please fill id!!!")
         return;
     }
-    fetch(baseUrl + userIdElement, {method: 'DELETE'})
+    fetch(baseUrl + "users/" + userIdElement, {method: 'DELETE'})
         .then(response => {
             console.log(response)
             document.getElementById("li_id_" + userIdElement).remove()
         })
 }
 
-// function validateUser(arr) {
-//     arr.forEach(function (item) {
-//         if (item === "") {
-//             alert("Please fill" + item + "!!!");
-//             return;
-//         }
-//     });
-// }
+function validateUser(arr) {
+    arr.forEach(function (item) {
+        if (item === "") {
+            alert("Please fill" + item + "!!!");
+            return;
+        }
+    });
+}

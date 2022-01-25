@@ -18,10 +18,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static com.dmitri.constant.WebConstant.DATE_FORMAT_JSON;
+
 @Log
 public class AbstractHttpController extends HttpServlet {
 
-    public static final String DATE_FORMAT_JSON = "yyyy-mm-dd";
     private final Gson gson;
     protected final RoleService roleService;
     protected final UserService userService;

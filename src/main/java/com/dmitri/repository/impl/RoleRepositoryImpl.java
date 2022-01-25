@@ -9,16 +9,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoleRepositoryImpl implements RoleRepository {
+import static com.dmitri.constant.WebConstant.*;
 
-    /**
-     * SQL queries
-     */
-    private static final String SELECT_ALL_ROLES_SQL_QUERY = "SELECT id, name FROM role";
-    private static final String INSERT_NEW_ROLE_SQL_QUERY = "INSERT INTO role SET name = ?";
-    private static final String DELETE_ROLE_BY_ID_SQL_QUERY = "DELETE FROM role WHERE id = ?";
-    private static final String SELECT_LAST_ROLE_ID_SQL_QUERY = "SELECT MAX(id) AS id FROM role";
-    private static final String UPDATE_ROLE_NAME_BY_ROLE_ID_SQL_QUERY = "UPDATE role SET name = ? WHERE id = ?";
+public class RoleRepositoryImpl implements RoleRepository {
 
     /**
      * Role column names: 'id' and 'name'
@@ -48,7 +41,7 @@ public class RoleRepositoryImpl implements RoleRepository {
                 roleList.add(role);
             }
         } catch (SQLException ex) {
-            throw new ApplicationException("Error getting roles from database, error:", ex);
+            throw new ApplicationException("Error getting roles from database, error: " + ex.getMessage());
         }
         return roleList;
     }
@@ -60,7 +53,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             preparedStatement.setInt(1, id);
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new ApplicationException("Error deleting role by id from database, error:", ex);
+            throw new ApplicationException("Error deleting role by id from database, error: " + ex.getMessage());
         }
     }
 
@@ -71,7 +64,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             preparedStatement.setString(1, name);
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new ApplicationException("Error inserting new role to database, error:", ex);
+            throw new ApplicationException("Error inserting new role to database, error: " + ex.getMessage());
         }
     }
 
@@ -83,7 +76,7 @@ public class RoleRepositoryImpl implements RoleRepository {
             preparedStatement.setInt(2, role.getId());
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new ApplicationException("Error updating role name by id, error:", ex);
+            throw new ApplicationException("Error updating role name by id, error: " + ex.getMessage());
         }
     }
 
@@ -98,7 +91,7 @@ public class RoleRepositoryImpl implements RoleRepository {
                 throw new ApplicationException("Not found role by last id");
             }
         } catch (SQLException ex) {
-            throw new ApplicationException("Error getting last role id by max id, error:", ex);
+            throw new ApplicationException("Error getting last role id by max id, error: " + ex.getMessage());
         }
     }
 }

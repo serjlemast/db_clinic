@@ -19,5 +19,5 @@ public interface UserRepository {
 
     int getCountOfUsers();
 
-    int updateUserRoleIdByName(int userId,String roleName);
+    boolean findUserByParameters(String username,String password);
 }

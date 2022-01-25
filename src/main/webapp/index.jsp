@@ -34,6 +34,10 @@
                     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#categoryTab" role="tab"
                        aria-controls="categoryTab" aria-selected="false">Category</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<%= request.getRequestURL() %>logout"
+                       aria-controls="categoryTab" aria-selected="false">Logout</a>
+                </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade active show" id="userTab" role="tabpanel" aria-labelledby="home-tab">

@@ -33,15 +33,13 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         int userId = getNewUserIdTx(user);
         user.setId(userId);
-        userRepository.updateUserRoleIdByName(userId,user.getRoleName());
         return user;
     }
 
     @Override
     public void updateUser(User user) {
         int statusCode = userRepository.updateUser(user);
-        int statusCode2 = userRepository.updateUserRoleIdByName(user.getId(),user.getRoleName());
-        if (statusCode > 0 && statusCode2 >0) {
+        if (statusCode > 0) {
             return;
         }
         throw new ApplicationException("Cant update user: " + user);
@@ -63,6 +61,11 @@ public class UserServiceImpl implements UserService {
             return status;
         }
         throw new ApplicationException("Not found count of user");
+    }
+
+    @Override
+    public boolean findUserByCredentials(String username, String password) {
+        return userRepository.findUserByParameters(username,password);
     }
 
     private int getNewUserIdTx(User user) {

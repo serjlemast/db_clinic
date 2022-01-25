@@ -33,7 +33,7 @@ function createRoleNameList(roleInJsonFormat) {
         let childElement2 = document.createElement("button");
         childElement2.setAttribute("type", "button")
         childElement2.setAttribute("class", "dropdown-item")
-        childElement2.setAttribute("id", "role_name_list" + item.id)
+        childElement2.setAttribute("id", "role_name_list_" + item.id)
         let text2 = document.createTextNode(item.name);
         childElement2.appendChild(text2);
         rootElement2.appendChild(childElement2)
@@ -111,7 +111,7 @@ function eventDeleteRoleById() {
         return;
     }
     idValidate(roleIdElement)
-    fetch(baseUrl + roleIdElement, {method: 'DELETE'})
+    fetch(baseUrl +"roles/"+ roleIdElement, {method: 'DELETE'})
         .then(response => {
             console.log(response)
             document.getElementById("li_id_" + roleIdElement).remove()

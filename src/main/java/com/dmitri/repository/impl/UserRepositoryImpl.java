@@ -9,20 +9,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dmitri.constant.WebConstant.DEFAULT_COUNT_OF_USERS_ON_PAGE;
+import static com.dmitri.constant.WebConstant.*;
 
 public class UserRepositoryImpl implements UserRepository {
-
-    /**
-     * SQL queries
-     */
-    private static String SELECT_USERS_SQL_QUERY = "SELECT u.id, first_name, second_name, phone, birthday, username," +
-            " password, r.name AS role_name FROM users AS u LEFT JOIN role AS r ON role_id=r.id LIMIT 5 OFFSET ";
-    private static final String INSERT_NEW_USER_SQL_QUERY = "INSERT INTO users (second_name,birthday,first_name,phone," +
-            "room_number,password,username) VALUES (?,?,?,?,?,?,?)";
-    private static final String DELETE_USER_BY_ID_SQL_QUERY = "DELETE FROM users WHERE id = ?";
-    private static final String SELECT_LAST_USER_ID_SQL_QUERY = "SELECT MAX(id) AS id FROM users";
-    private static final String SELECT_COUNT_OF_USERS_SQL_QUERY = "SELECT COUNT(id) AS count_id FROM users";
 
     /**
      * User column
@@ -64,7 +53,7 @@ public class UserRepositoryImpl implements UserRepository {
                 userList.add(user);
             }
         } catch (SQLException ex) {
-            throw new ApplicationException("Error getting users from database, error:", ex);
+            throw new ApplicationException("Error getting users from database, error: " + ex.getMessage());
         }
         return userList;
     }
@@ -86,7 +75,7 @@ public class UserRepositoryImpl implements UserRepository {
                 throw new ApplicationException("Not found user by last id");
             }
         } catch (SQLException ex) {
-            throw new ApplicationException("Error getting last user id by max id, error:", ex);
+            throw new ApplicationException("Error getting last user id by max id, error: " + ex.getMessage());
         }
     }
 
@@ -96,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setInt(1, id);
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new ApplicationException("Error deleting USER by id from database, error:", ex);
+            throw new ApplicationException("Error deleting USER by id from database, error: " + ex.getMessage());
         }
     }
 
@@ -110,9 +99,10 @@ public class UserRepositoryImpl implements UserRepository {
             preparedStatement.setString(5, user.getRoomNumber());
             preparedStatement.setString(6, user.getPassword());
             preparedStatement.setString(7, user.getUsername());
+            preparedStatement.setString(8, user.getRoleName());
             return preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new ApplicationException("Error inserting new user to database, error:", ex);
+            throw new ApplicationException("Error inserting new user to database, error: " + ex.getMessage());
         }
     }
 
@@ -121,7 +111,7 @@ public class UserRepositoryImpl implements UserRepository {
         try (Statement statement = connection.createStatement()) {
             return statement.executeUpdate(createCustomSql(user));
         } catch (SQLException ex) {
-            throw new ApplicationException("Error updating role name by id, error:", ex);
+            throw new ApplicationException("Error updating role name by id, error: " + ex.getMessage());
         }
     }
 
@@ -132,10 +122,22 @@ public class UserRepositoryImpl implements UserRepository {
             if (resultSet.next()) {
                 return resultSet.getInt("count_id");
             } else {
-                throw new ApplicationException("Not found user by last id");
+                return 0;
             }
         } catch (SQLException ex) {
-            throw new ApplicationException("Error getting count of users, error:", ex);
+            throw new ApplicationException("Error getting count of users, error: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public boolean findUserByParameters(String username,String password) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM users WHERE username = ? AND password = ?")) {
+            preparedStatement.setString(1,username);
+            preparedStatement.setString(2,password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+                return resultSet.next();
+        } catch (SQLException ex) {
+            throw new ApplicationException("Error finding user by username and password, error: " + ex.getMessage());
         }
     }
 
@@ -144,45 +146,36 @@ public class UserRepositoryImpl implements UserRepository {
                 .append("username = '" + user.getUsername() + "'")
                 .append(",")
                 .append("second_name = '" + user.getSecondName() + "'");
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+        String password = user.getPassword();
+        if (password != null && !password.isEmpty()) {
             builder
                     .append(",")
-                    .append("password = '" + user.getPassword() + "'");
+                    .append("password = '" + password + "'");
         }
-        if (user.getFirstName() != null && !user.getFirstName().isEmpty()) {
+        String firstName = user.getFirstName();
+        if (firstName != null && !firstName.isEmpty()) {
             builder
                     .append(",")
-                    .append("first_name = '" + user.getFirstName() + "'");
+                    .append("first_name = '" + firstName + "'");
         }
         String phone = user.getPhone();
         if (phone != null && !phone.isEmpty()) {
             builder
                     .append(",")
-                    .append("phone = '" + user.getPhone() + "'");
-
+                    .append("phone = '" + phone + "'");
         }
-        if (user.getBirthday() != null) {
+        Date birthday = user.getBirthday();
+        if (birthday != null) {
             builder
                     .append(",")
-                    .append("birthday = '" + user.getBirthday() + "'");
-
+                    .append("birthday = '" + birthday + "'");
         }
-
-        String parameters = builder.toString();
-        String templateSql = "UPDATE users SET %s WHERE id = %s";
-        String result = String.format(templateSql, parameters, user.getId());
-        return result;
-    }
-
-    @Override
-    public int updateUserRoleIdByName(int userId, String roleName) {
-        String sql = "UPDATE users AS u LEFT JOIN role AS r ON r.name = '%s'" +
-                " SET role_id = r.id WHERE u.id = %s";
-        try (Statement statement = connection.createStatement()) {
-            String result = String.format(sql,roleName,userId);
-            return statement.executeUpdate(result);
-        } catch (SQLException ex) {
-            throw new ApplicationException("Error updating role_id by role.name, error:", ex);
+        String roleName = user.getRoleName();
+        if (roleName != null && roleName.isEmpty()) {
+            builder
+                    .append(",")
+                    .append("role_id = (SELECT id FROM role WHERE name = " + roleName + ")");
         }
+        return String.format(UPDATE_USER_TEMPLATE_SQL_QUERY, builder.toString(), user.getId());
     }
 }

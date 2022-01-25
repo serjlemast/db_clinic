@@ -20,4 +20,6 @@ public interface UserService {
     void deleteUser(int userId);
 
     int getCountOfUser();
+
+    boolean findUserByCredentials(String username, String password);
 }

@@ -1,5 +1,6 @@
 package com.dmitri.listener;
 
+import com.dmitri.exeption.ApplicationException;
 import com.dmitri.utils.MyDataBaseConnection;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
@@ -9,6 +10,11 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.net.Socket;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import static com.dmitri.constant.WebConstant.SHOW_TABLE_SQL_QUERY;
 
 @Log
 @WebListener
@@ -19,10 +25,13 @@ public class ApplicationListener implements ServletContextListener {
         log.info("start application");
         try {
             Connection connection = MyDataBaseConnection.getInstance();
-            //todo implement logic for verification exist more than one table are in database
+            PreparedStatement preparedStatement = connection.prepareStatement(SHOW_TABLE_SQL_QUERY);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next()){
+                throw new ApplicationException("No tables in data base");
+            }
         } catch (Exception e) {
-            log.warning("No connection to database , err massage:" + e.getMessage());
-            System.out.println("No connection to database , err massage:" + e.getMessage());
+            log.info("No connection to database , err massage:" + e.getMessage());
             shutDown();
         }
     }
