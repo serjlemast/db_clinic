@@ -17,6 +17,13 @@ public class WebConstant {
     public final static String SHOW_TABLE_SQL_QUERY = "SHOW TABLES";
 
     /**
+     * Objects that linked to http session
+     */
+    public static final String SESSION_USER_NAME = "sessionUserName";
+    public static final String SESSION_USER_ROLE = "sessionUserRole";
+    public static final String SESSION_USER_ID = "sessionUserId";
+
+    /**
      * SQL queries for user table
      */
     public static String SELECT_USERS_SQL_QUERY = "SELECT u.id, first_name, second_name, phone, birthday, username," +
@@ -27,6 +34,8 @@ public class WebConstant {
     public static final String SELECT_LAST_USER_ID_SQL_QUERY = "SELECT MAX(id) AS id FROM users";
     public static final String SELECT_COUNT_OF_USERS_SQL_QUERY = "SELECT COUNT(id) AS count_id FROM users";
     public static final String UPDATE_USER_TEMPLATE_SQL_QUERY = "UPDATE users SET %s WHERE id = %s";
+    public static final String SELECT_USER_BY_CREDENTIAL_SQL_QUERY = "SELECT u.id AS id, username, r.name AS name FROM users AS u" +
+            " LEFT JOIN role AS r ON r.id = u.role_id WHERE username = ? AND password = ?";
 
 
     /**

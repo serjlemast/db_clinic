@@ -2,6 +2,7 @@ package com.dmitri.service.impl;
 
 import com.dmitri.exeption.ApplicationException;
 import com.dmitri.model.User;
+import com.dmitri.model.UserCredential;
 import com.dmitri.repository.UserRepository;
 import com.dmitri.repository.impl.UserRepositoryImpl;
 import com.dmitri.service.UserService;
@@ -64,8 +65,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean findUserByCredentials(String username, String password) {
-        return userRepository.findUserByParameters(username,password);
+    public UserCredential findUserByCredentials(String username, String password) {
+        return userRepository.findUserByUserNameAndPassword(username,password);
     }
 
     private int getNewUserIdTx(User user) {

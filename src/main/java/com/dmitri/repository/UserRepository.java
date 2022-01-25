@@ -1,7 +1,7 @@
 package com.dmitri.repository;
 
-import com.dmitri.model.Role;
 import com.dmitri.model.User;
+import com.dmitri.model.UserCredential;
 
 import java.util.List;
 
@@ -19,5 +19,5 @@ public interface UserRepository {
 
     int getCountOfUsers();
 
-    boolean findUserByParameters(String username,String password);
+    UserCredential findUserByUserNameAndPassword(String username, String password);
 }

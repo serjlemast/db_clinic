@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.dmitri.constant.WebConstant.*;
+
 @WebFilter("/*")
 public class SecurityFilter extends HttpFilter {
 
@@ -18,11 +20,17 @@ public class SecurityFilter extends HttpFilter {
             chain.doFilter(req, res);
         }
         HttpSession session = req.getSession();
-        Object userSession = session.getAttribute("user_session");
-        if (userSession == null) {
+        Object userName = session.getAttribute(SESSION_USER_NAME);
+        Object userRole = session.getAttribute(SESSION_USER_ROLE);
+        Object userId = session.getAttribute(SESSION_USER_ID);
+        if (userRole == null) {
             RequestDispatcher requestDispatcher = req.getRequestDispatcher("/login");
             requestDispatcher.forward(req, res);
-        }else {
+        } else {
+//            userRole
+            //1 GET USER ROLE FROM SESSION
+            //2 IF ROLE ADMIN REDIRECT "/"
+            //3 IF ROLE !ADMIN RED "CLIENT.JSP"
             chain.doFilter(req, res);
         }
     }

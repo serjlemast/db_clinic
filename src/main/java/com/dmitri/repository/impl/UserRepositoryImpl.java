@@ -2,6 +2,7 @@ package com.dmitri.repository.impl;
 
 import com.dmitri.exeption.ApplicationException;
 import com.dmitri.model.User;
+import com.dmitri.model.UserCredential;
 import com.dmitri.repository.UserRepository;
 import com.dmitri.utils.MyDataBaseConnection;
 
@@ -130,12 +131,20 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean findUserByParameters(String username,String password) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id FROM users WHERE username = ? AND password = ?")) {
-            preparedStatement.setString(1,username);
-            preparedStatement.setString(2,password);
+    public UserCredential findUserByUserNameAndPassword(String username, String password) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_USER_BY_CREDENTIAL_SQL_QUERY)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
-                return resultSet.next();
+            //TODO BEST PRAC IMPLEMENT IN THE FUTURE
+             if (resultSet.next()) {
+                 return UserCredential.builder()
+                         .id(resultSet.getInt("id"))
+                         .roleName(resultSet.getString("name"))
+                         .userName(resultSet.getString("username"))
+                         .build();
+             }
+             return null;
         } catch (SQLException ex) {
             throw new ApplicationException("Error finding user by username and password, error: " + ex.getMessage());
         }

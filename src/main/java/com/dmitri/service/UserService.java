@@ -1,6 +1,7 @@
 package com.dmitri.service;
 
 import com.dmitri.model.User;
+import com.dmitri.model.UserCredential;
 
 import java.util.List;
 
@@ -21,5 +22,5 @@ public interface UserService {
 
     int getCountOfUser();
 
-    boolean findUserByCredentials(String username, String password);
+    UserCredential findUserByCredentials(String username, String password);
 }
