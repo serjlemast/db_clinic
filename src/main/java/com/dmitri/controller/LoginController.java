@@ -41,11 +41,6 @@ public class LoginController extends AbstractHttpController {
                 session.setAttribute(SESSION_USER_ROLE, userCredential.getRoleName());
                 session.setAttribute(SESSION_USER_ID, userCredential.getId());
                 resp.sendRedirect(req.getContextPath());
-//                req.getRequestDispatcher("/").forward(req, resp);
-//                RequestDispatcher dispatcher = req.getRequestDispatcher("/");
-//                dispatcher.include();//todo READ
-//                dispatcher.forward();//todo READ
-//                resp.sendRedirect("/");//todo READ
             }
             else {
                 req.setAttribute("error","user not found by username: " + username);

@@ -8,7 +8,6 @@ import lombok.extern.java.Log;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static com.dmitri.constant.WebConstant.DEFAULT_COUNT_OF_USERS_ON_PAGE;

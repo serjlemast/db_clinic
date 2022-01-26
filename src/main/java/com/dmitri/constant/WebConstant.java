@@ -2,7 +2,7 @@ package com.dmitri.constant;
 
 public class WebConstant {
     /**
-     *
+     * Count of users that shows on page
      */
     public final static int DEFAULT_COUNT_OF_USERS_ON_PAGE = 5;
 
@@ -12,7 +12,7 @@ public class WebConstant {
     public static final String DATE_FORMAT_JSON = "yyyy-MM-dd";
 
     /**
-     *
+     * SQL query that show tables
      */
     public final static String SHOW_TABLE_SQL_QUERY = "SHOW TABLES";
 
